@@ -1,4 +1,7 @@
+import { loadImageSelecOptions } from '../pages/editor/editor.js';
+import { promiseImage} from'./datas.js'
 console.log("Hello");
+var wrapper;
 
 function LoaDate() {
   var footer = document.querySelector("footer");
@@ -17,6 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
   wrapper = document.querySelector("#wrapper");
   initNavbar();
   constructMainRouteContent(location.pathname);
+  promiseImage.then(images=>{ console.log('images',images)});
+ 
 });
 
 function initNavbar() {
@@ -47,37 +52,53 @@ function constructMainRouteContent(Path) {
   }
 }
 
-//a revoir
 function loadDOMEditor() {
-loadWrapperContent("/pages/editor/editor.html")
+  const promiseLoadingPage = loadWrapperContent(
+    "/pages/editor/editor.html",
+  );
+  promiseLoadingPage.then ((r)=>{
+    console.log('fin de chargement');
+  });
   // document.querySelector("#wrapper").innerHTML = "<h1>Editor</h1>";
+  Promise.all([promiseImage, promiseLoadingPage]).then(arrayDesReponses=>{
+    console.log('tous les chargement sont effectues',arrayDesReponses)
+    loadImageSelecOptions(arrayDesReponses[0])
+  })
 }
 
 function loadDOMThumbnail() {
   document.querySelector("#wrapper").innerHTML = "<h1>Thumbnail</h1>";
 }
 
-
 // function loadDOMHome() {
 //   document.querySelector("#wrapper").innerHTML = "<h1>Home</h1>";
 // }
 
-function loadDOMHome() { //déclare la fonction
-  loadWrapperContent("/pages/home/home.html")
+function loadDOMHome() {
+  //déclare la fonction
+  loadWrapperContent("/pages/home/home.html");
 }
 
- /**
-  * fonction de chargement
-   * @param {string} pageUrl url de la oage html a changé par appel http
-   * @returns {void} aucun retour
-   */
+/**
+ * fonction de chargement du wrapper par une page html prevnant d'un adresse en param
+ * @param {string} pageUrl url de la oage html a changé par appel http
+ * @param {function?} callback execution post chargemebt DOM
+ * @returns {promise<HTMLElement>} aucun retour
+ */
 
-const loadWrapperContent=(pageUrl)=>{
-  const promise = fetch(pageUrl).then((response) => { //promise = fetch() retourne une Promise, stocker dans promise et attend la réponse
+const loadWrapperContent = (pageUrl) => {
+  const promise = fetch(pageUrl).then((response) => {
+    //promise = fetch() retourne une Promise, stocker dans promise et attend la réponse
     return response.text(); //et attend la réponse en texte
   });
 
-  promise.then((html) => { //Quand la réponse en texte est terminé
+  return promise.then((html) => {
+    //Quand la réponse en texte est terminé
     wrapper.innerHTML = html; //insert le html dans le wrapper.
+    return wrapper
   });
-}
+};
+
+
+
+
