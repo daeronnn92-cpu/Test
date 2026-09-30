@@ -1,13 +1,67 @@
-console.log('Hello');
+console.log("Hello");
 
 function LoaDate() {
-    document.querySelector('footer').innerHTML = new Date().toLocaleString();
+  var footer = document.querySelector("footer");
+
+  footer.innerHTML = new Date().toLocaleString();
+
+  setInterval(function () {
+    footer.innerHTML = new Date().toLocaleString();
+  }, 1000);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    LoaDate();
+// dqdqdqsdqsdqsd
 
-    setInterval(function () {
-        LoaDate();
-    }, 1000);
+document.addEventListener("DOMContentLoaded", function () {
+  LoaDate();
+  wrapper = document.querySelector("#wrapper");
+  initNavbar();
+  constructMainRouteContent(location.pathname)
 });
+
+function initNavbar() {
+  var links = document.querySelectorAll("nav a");
+
+  links.forEach(function (link) {
+    link.addEventListener("click", function (evt) {
+      evt.preventDefault();
+      console.log(evt);
+      constructMainRouteContent(evt.target.attributes["href"].value);
+      history.pushState(null, "", evt.target.attributes["href"].value);
+    });
+  });
+}
+
+function constructMainRouteContent(Path) {
+  switch (Path) {
+    case "/editor":
+      loadDOMEditor();
+      break;
+    case "/thumbnail":
+      loadDOMThumbnail();
+      break;
+
+    default:
+      loadDOMHome();
+      break;
+  }
+}
+
+function loadDOMEditor() {
+  document.querySelector("#wrapper").innerHTML = "<h1>Editor</h1>";
+}
+
+function loadDOMThumbnail() {
+  document.querySelector("#wrapper").innerHTML = "<h1>Thumbnail</h1>";
+}
+
+function loadDOMHome() {
+  document.querySelector("#wrapper").innerHTML = "<h1>Home</h1>";
+}
+
+function loadDOMHome() {
+  const promise = fetch('/page/home/home.html').then(response => {return response.text();
+    promise.then(html=>{wrapper.innerHTML =html;})
+  });
+}
+
