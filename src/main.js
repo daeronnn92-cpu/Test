@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
   LoaDate();
   wrapper = document.querySelector("#wrapper");
   initNavbar();
-  constructMainRouteContent(location.pathname)
+  constructMainRouteContent(location.pathname);
 });
 
 function initNavbar() {
@@ -47,21 +47,37 @@ function constructMainRouteContent(Path) {
   }
 }
 
+//a revoir
 function loadDOMEditor() {
-  document.querySelector("#wrapper").innerHTML = "<h1>Editor</h1>";
+loadWrapperContent("/pages/editor/editor.html")
+  // document.querySelector("#wrapper").innerHTML = "<h1>Editor</h1>";
 }
 
 function loadDOMThumbnail() {
   document.querySelector("#wrapper").innerHTML = "<h1>Thumbnail</h1>";
 }
 
-function loadDOMHome() {
-  document.querySelector("#wrapper").innerHTML = "<h1>Home</h1>";
+
+// function loadDOMHome() {
+//   document.querySelector("#wrapper").innerHTML = "<h1>Home</h1>";
+// }
+
+function loadDOMHome() { //déclare la fonction
+  loadWrapperContent("/pages/home/home.html")
 }
 
-function loadDOMHome() {
-  const promise = fetch('/page/home/home.html').then(response => {return response.text();
-    promise.then(html=>{wrapper.innerHTML =html;})
+ /**
+  * fonction de chargement
+   * @param {string} pageUrl url de la oage html a changé par appel http
+   * @returns {void} aucun retour
+   */
+
+const loadWrapperContent=(pageUrl)=>{
+  const promise = fetch(pageUrl).then((response) => { //promise = fetch() retourne une Promise, stocker dans promise et attend la réponse
+    return response.text(); //et attend la réponse en texte
+  });
+
+  promise.then((html) => { //Quand la réponse en texte est terminé
+    wrapper.innerHTML = html; //insert le html dans le wrapper.
   });
 }
-
